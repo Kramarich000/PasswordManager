@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,8 +20,8 @@ namespace PasswordManager
             byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
             using (var aes = Aes.Create())
             {
-                aes.Key = new byte[32]; // Секретный ключ (для примера)
-                aes.IV = new byte[16]; // Вектор инициализации (для примера)
+                aes.Key = new byte[32]; 
+                aes.IV = new byte[16]; 
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                 using (var ms = new System.IO.MemoryStream())
                 {
@@ -33,5 +34,24 @@ namespace PasswordManager
                 }
             }
         }
-    }
-}
+
+        static void AddPassword(string name, string password)
+        {
+            string encryptedPassword = Encrypt(password);
+            passwordStore[name] = encryptedPassword;
+            Console.WriteLine($"Пароль для {name} добавлен.");
+        }
+
+        static void RemovePassword(string name)
+        {
+            if (passwordStore.Remove(name))
+            {
+                Console.WriteLine($"Пароль для {name} удален.");
+            }
+            else
+            {
+                Console.WriteLine($"Пароль для {name} не найден.");
+
+            }
+        }
+ }
