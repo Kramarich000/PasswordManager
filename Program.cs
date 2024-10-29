@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace PasswordManager
@@ -53,21 +51,17 @@ namespace PasswordManager
         static string Encrypt(string plainText)
         {
             byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-            using (var aes = Aes.Create())
+            using var aes = Aes.Create();
+            aes.Key = new byte[32];
+            aes.IV = new byte[16];
+            var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using var ms = new System.IO.MemoryStream();
+            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
             {
-                aes.Key = new byte[32];
-                aes.IV = new byte[16];
-                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        cs.Write(plainBytes, 0, plainBytes.Length);
-                        cs.Close();
-                    }
-                    return Convert.ToBase64String(ms.ToArray());
-                }
+                cs.Write(plainBytes, 0, plainBytes.Length);
+                cs.Close();
             }
+            return Convert.ToBase64String(ms.ToArray());
         }
 
         static void AddPassword(string name, string password)
@@ -98,6 +92,4 @@ namespace PasswordManager
             }
         }
     }
-
-
 }
