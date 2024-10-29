@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -54,4 +53,13 @@ namespace PasswordManager
 
             }
         }
+      static void DisplayPasswords()
+      {
+          Console.WriteLine("Список сохраненных паролей:");
+          foreach (var entry in passwordStore)
+          {
+              Console.WriteLine($"Имя: {entry.Key}, Пароль: {entry.Value}");
+          }
+      }
  }
+
